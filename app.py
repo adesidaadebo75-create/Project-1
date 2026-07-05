@@ -6,6 +6,13 @@ try:
 except Exception:
     px = None
 
+# Ensure statsmodels availability for Plotly OLS trendline
+try:
+    import statsmodels.api as sm  # noqa: F401 - imported for plotly trendline
+    _HAS_STATSMODELS = True
+except Exception:
+    _HAS_STATSMODELS = False
+
 import streamlit as st
 
 # ==========================================
@@ -106,8 +113,13 @@ with tab1:
 
         # SCATTER PLOT
         customer_spending = retail_df.groupby(["Customer ID", "Age"])["Total Amount"].sum().reset_index()
-        fig5 = px.scatter(customer_spending, x="Age", y="Total Amount", trendline="ols",
-                          title="Customer Age vs Spending")
+        if _HAS_STATSMODELS:
+            fig5 = px.scatter(customer_spending, x="Age", y="Total Amount", trendline="ols",
+                              title="Customer Age vs Spending")
+        else:
+            fig5 = px.scatter(customer_spending, x="Age", y="Total Amount",
+                              title="Customer Age vs Spending")
+            st.warning("statsmodels is not installed — OLS trendline disabled. Install with `pip install statsmodels` to enable the trendline.")
         st.plotly_chart(fig5, use_container_width=True)
     else:
         st.info("Plotly is not installed. Charts are disabled. Install with `pip install plotly` to enable visualizations.")
