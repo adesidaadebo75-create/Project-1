@@ -28,12 +28,14 @@ def load_excel(filename):
     file_path = BASE_DIR / filename
 
     if file_path.exists():
-        return pd.read_excel(file_path)
+        # FIX APPLIED HERE
+        return pd.read_excel(file_path, engine="openpyxl")
     else:
         st.warning(f"⚠️ File not found: **{filename}**. Please upload it below.")
         uploaded = st.file_uploader(f"Upload {filename}", type=["xlsx"])
         if uploaded:
-            return pd.read_excel(uploaded)
+            # FIX APPLIED HERE
+            return pd.read_excel(uploaded, engine="openpyxl")
         else:
             st.stop()  # Prevent the app from crashing
 
@@ -206,22 +208,6 @@ st.markdown("---")
 st.markdown("""
 ### About This Project
 
-**RetailIQ Pro** is a Business Intelligence dashboard built using:
-
-- Python
-- Pandas
-- Streamlit
-- Plotly
-
-### Features
-
-- KPI Monitoring
-- Customer Analytics
-- Revenue Analysis
-- Profitability Analysis
-- Demographic Insights
-- Comparative Benchmarking
-- Interactive Visualizations
 
 **Developer:** Adebowale Adesida  
 **Degree:** B.B.A. Management Information Systems  
